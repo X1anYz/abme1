@@ -1,0 +1,11 @@
+[project]
+name = "my-app"
+version = "0.1.0"
+description = "My Python app on Vercel"
+dependencies = [
+    "flask",  # 這裡列出你需要的套件
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
