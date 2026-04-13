@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>個人自我介紹</title>
+
+    <link rel="icon" href="my_logo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --text-color: #ffffff;
+            --accent-color: #3498db;
+            --menu-bg: rgba(0, 0, 0, 0.98);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', 'Segoe UI', "PingFang TC", "Microsoft JhengHei", sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* 讓捲動到的目標不要被頂部遮擋 */
+        section {
+            scroll-margin-top: 50px;
+        }
+
+        /* --- 選單按鈕 (Hamburger/Close) --- */
+        .menu-btn {
+            position: fixed;
+            top: 30px; 
+            right: 30px;
+            z-index: 1001;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.4s ease;
+        }
+
+        .menu-btn:hover {
+            transform: rotate(90deg);
+        }
+
+        .menu-btn span {
+            position: absolute;
+            display: block;
+            width: 25px;
+            height: 2px;
+            background-color: var(--text-color);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        /* 兩條線構成 "+" 或 "X" */
+        .menu-btn span:nth-child(1) { transform: rotate(90deg); }
+        .menu-btn span:nth-child(2) { transform: rotate(0deg); }
+
+        /* 切換狀態 */
+        .menu-btn.open { transform: rotate(135deg); }
+        .menu-btn.open span { background-color: var(--accent-color); }
+
+        /* --- 全螢幕選單遮罩 --- */
+        .nav-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--menu-bg);
+            z-index: 1000;
+            display: flex; justify-content: center; align-items: center;
+            
+            /* 預設隱藏狀態 */
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.9); 
+            transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.5s;
+        }
+
+        .nav-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        .nav-list { list-style: none; text-align: center; }
+        .nav-list li { 
+            margin: 30px 0;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.4s ease;
+        }
+
+        .nav-overlay.active .nav-list li { opacity: 1; transform: translateY(0); }
+        .nav-overlay.active .nav-list li:nth-child(1) { transition-delay: 0.2s; }
+        .nav-overlay.active .nav-list li:nth-child(2) { transition-delay: 0.3s; }
+        .nav-overlay.active .nav-list li:nth-child(3) { transition-delay: 0.4s; }
+        .nav-overlay.active .nav-list li:nth-child(4) { transition-delay: 0.5s; }
+
+        .nav-list a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 2.2rem;
+            font-weight: bold;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            transition: color 0.3s ease;
+        }
+        .nav-list a:hover { color: var(--accent-color); }
+
+        /* --- 頁面內容樣式 --- */
+        .hero, section {
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 100px 40px;
+        }
+
+        .hero {
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(52, 152, 219, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(155, 89, 182, 0.1) 0%, transparent 50%),
+                #0a0a0a;
+            background-attachment: fixed;
+            text-align: center;
+        }
+
+        .hero h1 { 
+            font-size: 4rem; 
+            letter-spacing: 10px; 
+            text-transform: uppercase;
+            text-shadow: 0px 0px 20px rgba(255, 255, 255, 0.1);
+        }
+        .hero .subtitle { 
+            font-size: 1.5rem; 
+            color: var(--accent-color); 
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        /* 捲動淡入動畫 */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-content { max-width: 1000px; width: 100%; margin: 0 auto; }
+        h2 { 
+            font-size: 2.5rem; 
+            margin-bottom: 40px; 
+            border-bottom: 1px solid #333; 
+            padding-bottom: 10px; 
+            letter-spacing: 3px;
+        }
+        .content-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
+
+        .footer { padding: 50px 0; text-align: center; border-top: 1px solid #222; font-size: 0.8rem; opacity: 0.4; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; letter-spacing: 5px; }
+            .hero .subtitle { font-size: 1.2rem; }
+            .nav-list a { font-size: 1.8rem; }
+            section { padding: 80px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="menu-btn" id="menuBtn">
+        <span></span>
+        <span></span>
+    </div>
+
+    <nav class="nav-overlay" id="navOverlay">
+        <ul class="nav-list">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#holland-code">Holland Code</a></li>
+            <li><a href="#skills">ME</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="hero" id="home">
+            <h1>Zhang You-Xian</h1>
+            <div class="subtitle">張佑先 / 資管二A</div>
+        </div>
+
+        <section id="holland-code" class="reveal">
+            <div class="section-content">
+                <h2>HOLLAND CODE: R & I</h2>
+                <div class="content-grid">
+                    <div>
+                        <h3 style="color: var(--accent-color); margin-bottom: 15px;">Target Role: 系統架構工程師</h3>
+                        <p><strong>工作環境：</strong> 科技研發中心</p>
+                        <p><strong>工作職務：</strong> 負責自動化系統開發、底層架構設計與效能優化。</p>
+                    </div>
+                    <div>
+                        <h3 style="color: var(--accent-color); margin-bottom: 15px;">Professional Requirements</h3>
+                        <p><strong>R (Realistic) 實際型：</strong> 需具備動手實作能力。</p>
+                        <p><strong>I (Investigative) 研究型：</strong> 需進行複雜演算法分析。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="reveal">
+            <div class="section-content">
+                <h2>ME</h2>
+                <div class="content-grid">
+                    <p>身為一名資訊管理系的開發者，我結合了對技術實作的熱誠 (R) 與對邏輯鑽研的渴望 (I)。我也會許多程式語言，例如python、Java等等</p>
+                    <p>我曾參與瑪利亞社會福利基金會的軟體專案，將技術轉化為解決現實問題的工具。在我的實作經驗中，不論是管理複雜的遊戲伺服器生態、或是開發社會福利軟體，我始終不只是在解決單點的 Bug，而是在思考如何優化整個系統的通訊與資料流。我具備 JavaScript 的開發實力，並能結合對網路環境與資料結構的深刻理解，確保架構在具備高效能的同時，也能維持極高的穩定性。對我而言，一個好的架構就像精密設計的鐘錶，每一個零件的轉動都必須符合邏輯且精確無誤。</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="reveal">
+            <div class="section-content" style="text-align: center;">
+                <h2>CONTACT</h2>
+                <p style="margin-top: 20px; color: var(--accent-color); font-weight: bold;">s1131222@o365st.edu.tw</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 ZYX SITE. ALL RIGHTS RESERVED.</p>
+    </footer>
+
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const navOverlay = document.getElementById('navOverlay');
+
+        function toggleMenu() {
+            navOverlay.classList.toggle('active');
+            menuBtn.classList.toggle('open');
+        }
+
+        menuBtn.addEventListener('click', toggleMenu);
+
+        // 點擊連結或遮罩背景自動關閉選單
+        navOverlay.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A' || e.target === navOverlay) {
+                toggleMenu();
+            }
+        });
+
+        // 捲動偵測
+        const observerOptions = { threshold: 0.1 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
